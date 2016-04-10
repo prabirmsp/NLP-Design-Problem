@@ -13,13 +13,13 @@ import java.util.*;
  */
 public class TextParser {
 
-    private Map<String,Integer> keyWordFrequencyMap;
+    private List<String> acceptedMethods;
     private Map<String, Set<String>> keyWordMap;
     private static final String TAB_DELIMITER ="\t";
     private static final String COMMA_DELIMITER=",";
 
     TextParser(){
-        this.keyWordFrequencyMap = new HashMap<>();
+        this.acceptedMethods = new ArrayList<>();
         this.keyWordMap = new HashMap<>();
     }
 
@@ -45,7 +45,7 @@ public class TextParser {
     private void populateMaps(String [] terminologyKeyWordsToken) {
         String terminology = terminologyKeyWordsToken[0]; //Complete the square
         String keyWords = terminologyKeyWordsToken[1]; // [ complete, square ]
-        keyWordFrequencyMap.put(terminology,0);
+        acceptedMethods.add(terminology);
         String [] keyWordTokens = keyWords.split(COMMA_DELIMITER);
         for(String keyWord : keyWordTokens){
             Set<String> terminologies = this.keyWordMap.get(keyWord);
@@ -56,8 +56,8 @@ public class TextParser {
         }
     }
 
-    public Map<String, Integer> getKeyWordFrequencyMap(){
-        return this.keyWordFrequencyMap;
+    public List<String> getAcceptedMethods(){
+        return this.acceptedMethods;
     }
 
     public Map<String, Set<String>> getKeyWordMap(){
@@ -65,7 +65,16 @@ public class TextParser {
     }
 
 
-    public static void main(String ...args){
+    public static void main(String ...args) throws FileNotFoundException {
+        final String FILE_NAME = "res/keywords.txt";
+        TextParser textParser = new TextParser();
+        textParser.parseTextFile(FILE_NAME);
+        List<String> acceptedMethods =textParser.getAcceptedMethods();
+        Map<String, Set<String>> keyWordMap = textParser.getKeyWordMap();
+        System.out.println("Bag of accepted methods:  "+ acceptedMethods);
+        System.out.println("Key" + keyWordMap);
+
+
 
     }
 }
