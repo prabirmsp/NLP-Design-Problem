@@ -8,7 +8,7 @@ public class Main {
 
     private String[] parseInput(String input) {
 
-        return new String[];
+        return new String[0];
     }
 
 
