@@ -1,2 +1,5 @@
-Complete the square=>COMPLETE,SQUARE
-Quadratic formula=>QUADRATIC,FORMULA
+HELP=>help,hint
+CompleteSquare=>complete,square
+QuadraticFormula=>quadratic,formula
+FactorQuadratic=>factor,quadratic
+TakeSquareRoot=>square,root

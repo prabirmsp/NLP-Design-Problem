@@ -8,12 +8,11 @@ public class Main {
 
     private static final String KEYWORDS_FILENAME = "res/keywords.txt";
 
-
     public static void main(String[] args) throws FileNotFoundException {
 
         InputParser inputParser = new InputParser(KEYWORDS_FILENAME);
 
-        System.out.println("What method do you plan to use?\n-> ");
+        System.out.printf("What method do you plan to use?\n-> ");
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 

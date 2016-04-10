@@ -15,7 +15,7 @@ public class TextParser {
 
     private List<String> acceptedMethods;
     private Map<String, Set<String>> keyWordMap;
-    private static final String TAB_DELIMITER ="=>";
+    private static final String ARROW_DELIMITER ="=>";
     private static final String COMMA_DELIMITER=",";
 
     TextParser(){
@@ -31,10 +31,9 @@ public class TextParser {
     public void parseTextFile(String fileName ) throws FileNotFoundException {
         File file  = new File(fileName);
         Scanner scanner = new Scanner(file);
-        scanner.useDelimiter("\n");
-        while(scanner.hasNext()){
-            String nextLine = scanner.next();
-            String [] terminologyKeyWordsTokens = nextLine.split(TAB_DELIMITER);
+        while(scanner.hasNextLine()){
+            String nextLine = scanner.nextLine();
+            String [] terminologyKeyWordsTokens = nextLine.split(ARROW_DELIMITER);
             populateMaps(terminologyKeyWordsTokens);
         }
 
@@ -67,7 +66,9 @@ public class TextParser {
         return this.keyWordMap;
     }
 
-
+    /*
+    for testing purposes
+     */
     public static void main(String ...args) throws FileNotFoundException {
         final String FILE_NAME = "res/keywords.txt";
         TextParser textParser = new TextParser();

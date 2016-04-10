@@ -9,7 +9,6 @@ public class InputParser {
     private List<String> acceptedMethods;
     private Map<String, Set<String>> keywordMap;
     private static final String unrecognizedMethod = "UnrecognizedMethod";
-    private static final String helpMethod = "HELP";
 
     public InputParser(String keywordsFilename)
             throws FileNotFoundException {
@@ -19,7 +18,13 @@ public class InputParser {
         this.acceptedMethods = textParser.getAcceptedMethods();
     }
 
+    /**
+     * Parse the given input
+     * @param input, a string
+     * @return methods, a set of string methods
+     */
     public List<String> parseInput(String input) {
+        input = input.toLowerCase();
 
         // data structure to keep score
         Map<String, Integer> scores = new HashMap<>();
@@ -33,14 +38,14 @@ public class InputParser {
         // go through each keyword
         for (String keyword : keywordMap.keySet()) {
             // look for keyword in the input string
-            if (input.contains(keyword)) {
+            if (input.contains(keyword.toLowerCase())) {
                 // get the set of methods that the keyword is associated with
-                Set<String> values = keywordMap.get(keyword);
-                for (String v : values) {
+                Set<String> methods = keywordMap.get(keyword);
+                for (String method : methods) {
                     // add the score of each of the methods
-                    int score = scores.get(v) + 1;
+                    int score = scores.get(method) + 1;
                     maxScore = Math.max(maxScore, score);
-                    scores.put(v, score);
+                    scores.replace(method, score);
                 }
             }
         }
@@ -51,12 +56,13 @@ public class InputParser {
         // if none of the keywords match, then return unrecognizedMethod
         if (maxScore == 0) {
             methods.add(unrecognizedMethod);
-        }
+        } else {
 
-        // return the highest scored methods
-        for (String method : acceptedMethods) {
-            if (scores.get(method) == maxScore)
-                methods.add(method);
+            // return the highest scored methods
+            for (String method : acceptedMethods) {
+                if (scores.get(method) == maxScore)
+                    methods.add(method);
+            }
         }
 
         return methods;
