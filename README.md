@@ -2,6 +2,6 @@
 CSC-301
 
 ## Authors
-- Larry
+- Albert
 - Uzo
 - Prabir
