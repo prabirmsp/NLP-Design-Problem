@@ -16,6 +16,7 @@ public class InputParser {
         TextParser textParser = new TextParser();
         textParser.parseTextFile(keywordsFilename);
         this.keywordMap = textParser.getKeyWordMap();
+        this.acceptedMethods = textParser.getAcceptedMethods();
     }
 
     public List<String> parseInput(String input) {
