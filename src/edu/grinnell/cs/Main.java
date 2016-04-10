@@ -1,6 +1,8 @@
 package edu.grinnell.cs;
 
 import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
@@ -11,7 +13,13 @@ public class Main {
 
         InputParser inputParser = new InputParser(KEYWORDS_FILENAME);
 
-        System.out.println("Enter");
+        System.out.println("What method do you plan to use?\n-> ");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+
+        List<String> outputs = inputParser.parseInput(input);
+        String out = String.join(", ", outputs);
+        System.out.println("{" + out + "}");
 
 
     }
