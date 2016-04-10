@@ -15,7 +15,7 @@ public class TextParser {
 
     private List<String> acceptedMethods;
     private Map<String, Set<String>> keyWordMap;
-    private static final String TAB_DELIMITER ="\t";
+    private static final String TAB_DELIMITER ="=>";
     private static final String COMMA_DELIMITER=",";
 
     TextParser(){
@@ -31,6 +31,7 @@ public class TextParser {
     public void parseTextFile(String fileName ) throws FileNotFoundException {
         File file  = new File(fileName);
         Scanner scanner = new Scanner(file);
+        scanner.useDelimiter("\n");
         while(scanner.hasNext()){
             String nextLine = scanner.next();
             String [] terminologyKeyWordsTokens = nextLine.split(TAB_DELIMITER);
@@ -53,6 +54,8 @@ public class TextParser {
                 terminologies = new HashSet();
             }
             terminologies.add(terminology);
+            keyWordMap.put(keyWord,terminologies);
+            terminologies.add(terminology);
         }
     }
 
@@ -72,9 +75,6 @@ public class TextParser {
         List<String> acceptedMethods =textParser.getAcceptedMethods();
         Map<String, Set<String>> keyWordMap = textParser.getKeyWordMap();
         System.out.println("Bag of accepted methods:  "+ acceptedMethods);
-        System.out.println("Key" + keyWordMap);
-
-
-
+        System.out.println("KeyWordsMap" + keyWordMap);
     }
 }
