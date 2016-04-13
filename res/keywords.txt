@@ -1,4 +1,4 @@
-HELP=>help,hint
+HELP=>help,hint,don't know,no idea,do not know,not sure,no clue
 CompleteSquare=>complete,square
 QuadraticFormula=>quadratic,formula
 FactorQuadratic=>factor,quadratic
