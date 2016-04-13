@@ -2,16 +2,14 @@ package edu.grinnell.cs;
 
 
 import org.gauner.jSpellCorrect.ToySpellingCorrector;
+import org.tartarus.martin.Stemmer;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- *
- *
  * CITATIONS:
- *   - Spelling Corrector <a href="http://developer.gauner.org/jspellcorrect/"> Here</a>
- *
+ * - Spelling Corrector <a href="http://developer.gauner.org/jspellcorrect/"> Here</a>
  */
 public class InputParser {
 
@@ -19,6 +17,7 @@ public class InputParser {
     private Map<String, Set<String>> keywordMap;
     private static final String unrecognizedMethod = "UnrecognizedMethod";
     private ToySpellingCorrector spellingCorrector;
+    private Stemmer stemmer;
 
     public InputParser(String keywordsFilename)
             throws FileNotFoundException {
@@ -29,10 +28,12 @@ public class InputParser {
         spellingCorrector = new ToySpellingCorrector();
         for (String s : keywordMap.keySet())
             spellingCorrector.trainSingle(s);
+        stemmer = new Stemmer();
     }
 
     /**
      * Parse the given input
+     *
      * @param input, a string
      * @return methods, a set of string methods
      */
@@ -50,8 +51,13 @@ public class InputParser {
 
         // go through each keyword
         for (String keyword : keywordMap.keySet()) {
+            // stem the keyword
+            stemmer = new Stemmer();
+            stemmer.add(keyword.toCharArray(), keyword.length());
+            stemmer.stem();
+            String stemKeyword = stemmer.toString();
             // look for keyword in the input string
-            if (correctedInput.contains(keyword)) {
+            if (correctedInput.contains(stemKeyword)) {
                 // get the set of methods that the keyword is associated with
                 Set<String> methods = keywordMap.get(keyword);
                 for (String method : methods) {
@@ -85,10 +91,15 @@ public class InputParser {
         input = input.toLowerCase();
         StringBuilder builder = new StringBuilder(input.length());
 
-        String [] arr = input.split(" ");
+        String[] arr = input.split(" ");
 
         for (String s : arr) {
-           builder.append(spellingCorrector.correct(s)).append(" ");
+            stemmer = new Stemmer();
+            s = spellingCorrector.correct(s);
+            stemmer.add(s.toCharArray(), s.length());
+            stemmer.stem();
+            s = stemmer.toString();
+            builder.append(s).append(" ");
         }
         return builder.toString();
     }

@@ -11,14 +11,19 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         InputParser inputParser = new InputParser(KEYWORDS_FILENAME);
-
-        System.out.printf("What method do you plan to use?\n-> ");
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
+        String input;
 
-        List<String> outputs = inputParser.parseInput(input);
-        String out = String.join(", ", outputs);
-        System.out.println("{" + out + "}");
+        while (true) {
+            System.out.printf("What method do you plan to use?\n-> ");
+            input = scanner.nextLine();
+            if(input.equals("") || input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit"))
+                return;
+
+            List<String> outputs = inputParser.parseInput(input);
+            String out = String.join(", ", outputs);
+            System.out.println("{" + out + "}");
+        }
 
 
     }
