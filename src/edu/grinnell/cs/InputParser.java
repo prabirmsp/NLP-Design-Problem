@@ -83,7 +83,7 @@ public class InputParser {
         boolean containsHedgeCue = false;
 
         // look for help words
-        for (String keyword: HELP_KEYWORDS) {
+        for (String keyword: negativesMap.get(ABSOLUTE_NEGATIVE_KEY)) {
             if (correctedInput.contains(keyword)) {
                 containsHelp = true;
                 break;
@@ -91,7 +91,7 @@ public class InputParser {
         }
 
         // look for hedge cues
-        for (String keyword: HEDGE_CUE_KEYWORDS) {
+        for (String keyword: negativesMap.get(HEDGE_CUE_KEY)) {
             if (correctedInput.contains(keyword)) {
                 containsHedgeCue = true;
                 break;
