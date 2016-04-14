@@ -17,18 +17,22 @@ public class TextParser {
     private Map<String, Set<String>> keyWordMap;
     private static final String ARROW_DELIMITER ="=>";
     private static final String COMMA_DELIMITER=",";
+    private String fileName;
 
-    TextParser(){
+
+    TextParser(String fileName){
         this.acceptedMethods = new ArrayList<>();
         this.keyWordMap = new HashMap<>();
+        this.fileName = fileName;
     }
+
+
 
     /**
      * Parses the input text file @code{fileName} and populates respective maps for further processing
-     * @param fileName, the fileName of the file to be parsed
      * @throws FileNotFoundException
      */
-    public void parseTextFile(String fileName ) throws FileNotFoundException {
+    public void parseTextFile() throws FileNotFoundException {
         File file  = new File(fileName);
         Scanner scanner = new Scanner(file);
         while(scanner.hasNextLine()){
@@ -71,8 +75,8 @@ public class TextParser {
      */
     public static void main(String ...args) throws FileNotFoundException {
         final String FILE_NAME = "res/keywords.txt";
-        TextParser textParser = new TextParser();
-        textParser.parseTextFile(FILE_NAME);
+        TextParser textParser = new TextParser(FILE_NAME);
+        textParser.parseTextFile();
         List<String> acceptedMethods =textParser.getAcceptedMethods();
         Map<String, Set<String>> keyWordMap = textParser.getKeyWordMap();
         System.out.println("Bag of accepted methods:  "+ acceptedMethods);

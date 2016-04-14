@@ -12,32 +12,37 @@ import java.util.*;
  * - Spelling Corrector <a href="http://developer.gauner.org/jspellcorrect/"> Here</a>
  */
 public class InputParser {
-
+    private static final String HEDGE_CUE_KEY = "HC";
+    private static final String ABSOLUTE_NEGATIVE_KEY = "AN";
     public static final String HELP = "Help";
+    private static final String METHODS_FILENAME = "res/keywords.txt";
+    private static final String NEGATIVES_FILENAME = "res/negatives.txt";
 
     public static final String[] HELP_KEYWORDS = {
             "not use", "not using", "not do", "not doing", "won't do", "won't use", "wont do", "wont use"};
     public static final String[] HEDGE_CUE_KEYWORDS = {
             "help", "hint", "dont know", "don't know", "no idea", "do not know", "not sure", "no clue","maybe"};
 
+    private Map<String, Set<String>> negativesMap;
     private List<String> acceptedMethods;
-    private Map<String, Set<String>> keywordMap;
+    private Map<String, Set<String>> methodsKeyWordMap;
+
     private static final String unrecognizedMethod = "UnrecognizedMethod";
     private ToySpellingCorrector spellingCorrector;
 
-    public InputParser(String keywordsFilename)
+    public InputParser()
             throws FileNotFoundException {
-        TextParser textParser = new TextParser();
-        textParser.parseTextFile(keywordsFilename);
-        this.keywordMap = textParser.getKeyWordMap();
-        this.acceptedMethods = textParser.getAcceptedMethods();
+        TextParser methodsTextParser = new TextParser(METHODS_FILENAME);
+        TextParser negativeTextParser = new TextParser(NEGATIVES_FILENAME);
+        methodsTextParser.parseTextFile();
+        negativeTextParser.parseTextFile();
+        this.methodsKeyWordMap = methodsTextParser.getKeyWordMap();
+        this.acceptedMethods = methodsTextParser.getAcceptedMethods();
+        this.negativesMap = negativeTextParser.getKeyWordMap();
         spellingCorrector = new ToySpellingCorrector();
-        for (String s : keywordMap.keySet()) {
-            String[] arr = s.split(" ");
-            for (String word : arr)
-                spellingCorrector.trainSingle(word);
-        }
+        trainSpellingCorrector();
     }
+
 
     /**
      * Parse the given input
@@ -58,13 +63,13 @@ public class InputParser {
         int maxScore = 0;
 
         // go through each keyword
-        for (String keyword : keywordMap.keySet()) {
+        for (String keyword : methodsKeyWordMap.keySet()) {
             // stem the keyword
             String stemKeyword = stem(keyword);
             // look for keyword in the input string
             if (correctedInput.contains(stemKeyword)) {
                 // get the set of methods that the keyword is associated with
-                Set<String> methods = keywordMap.get(keyword);
+                Set<String> methods = methodsKeyWordMap.get(keyword);
                 for (String method : methods) {
                     // add the score of each of the methods
                     int score = scores.get(method) + 1;
@@ -138,5 +143,13 @@ public class InputParser {
         }
         return builder.toString();
     }
+    private void trainSpellingCorrector() {
+        for (String s : methodsKeyWordMap.keySet()) {
+            String[] arr = s.split(" ");
+            for (String word : arr)
+                spellingCorrector.trainSingle(word);
+        }
+    }
+
 
 }

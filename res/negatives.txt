@@ -1,0 +1,8 @@
+HC
+AN "not use"
+
+
+    public static final String[] HELP_KEYWORDS = {
+            "not use", "not using", "not do", "not doing", "won't do", "won't use", "wont do", "wont use"};
+    public static final String[] HEDGE_CUE_KEYWORDS = {
+            "help", "hint", "dont know", "don't know", "no idea", "do not know", "not sure", "no clue","maybe"};
