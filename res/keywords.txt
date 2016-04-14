@@ -1,5 +1,3 @@
-HELP=>not use,not using,not do,not doing,won't do,won't use,wont do,wont use
-HEDGE_CUES=>help,hint,dont know,don't know,no idea,do not know,not sure,no clue,maybe
 CompleteSquare=>complete,square
 QuadraticFormula=>quadratic,formula
 FactorQuadratic=>factor,quadratic

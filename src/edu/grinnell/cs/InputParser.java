@@ -15,6 +15,11 @@ public class InputParser {
 
     public static final String HELP = "Help";
 
+    public static final String[] HELP_KEYWORDS = {
+            "not use", "not using", "not do", "not doing", "won't do", "won't use", "wont do", "wont use"};
+    public static final String[] HEDGE_CUE_KEYWORDS = {
+            "help", "hint", "dont know", "don't know", "no idea", "do not know", "not sure", "no clue","maybe"};
+
     private List<String> acceptedMethods;
     private Map<String, Set<String>> keywordMap;
     private static final String unrecognizedMethod = "UnrecognizedMethod";
@@ -69,21 +74,43 @@ public class InputParser {
             }
         }
 
+        boolean containsHelp = false;
+        boolean containsHedgeCue = false;
+
+        // look for help words
+        for (String keyword: HELP_KEYWORDS) {
+            if (correctedInput.contains(keyword)) {
+                containsHelp = true;
+                break;
+            }
+        }
+
+        // look for hedge cues
+        for (String keyword: HEDGE_CUE_KEYWORDS) {
+            if (correctedInput.contains(keyword)) {
+                containsHedgeCue = true;
+                break;
+            }
+        }
+
         // list of methods to return
         ArrayList<String> methods = new ArrayList<>();
 
+        if (containsHelp || containsHedgeCue) {
+            methods.add(HELP);
+        }
         // if none of the keywords match, then return unrecognizedMethod
-        if (maxScore == 0) {
+        else if (maxScore == 0) {
             methods.add(unrecognizedMethod);
         } else {
 
 
             // if there are no negatives, or if the negative phrase is a hedge cue
-            if (negativeScore == 0 || hedgeCueScore > 0) {
+            if (!(containsHelp || containsHedgeCue) || containsHedgeCue) {
                 // return the highest scored methods
-                for (int i = 2; i < acceptedMethods.size(); i++) {
-                    if (scores.get(acceptedMethods.get(i)) == maxScore)
-                        methods.add(acceptedMethods.get(i));
+                for (String method : acceptedMethods) {
+                    if (scores.get(method) == maxScore)
+                        methods.add(method);
                 }
             }
         }
