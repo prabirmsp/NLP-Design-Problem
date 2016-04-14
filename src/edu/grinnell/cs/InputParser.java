@@ -13,11 +13,12 @@ import java.util.*;
  */
 public class InputParser {
 
+    public static final String HELP = "Help";
+
     private List<String> acceptedMethods;
     private Map<String, Set<String>> keywordMap;
     private static final String unrecognizedMethod = "UnrecognizedMethod";
     private ToySpellingCorrector spellingCorrector;
-    private Stemmer stemmer;
 
     public InputParser(String keywordsFilename)
             throws FileNotFoundException {
@@ -26,9 +27,11 @@ public class InputParser {
         this.keywordMap = textParser.getKeyWordMap();
         this.acceptedMethods = textParser.getAcceptedMethods();
         spellingCorrector = new ToySpellingCorrector();
-        for (String s : keywordMap.keySet())
-            spellingCorrector.trainSingle(s);
-        stemmer = new Stemmer();
+        for (String s : keywordMap.keySet()) {
+            String[] arr = s.split(" ");
+            for (String word : arr)
+                spellingCorrector.trainSingle(word);
+        }
     }
 
     /**
@@ -52,10 +55,7 @@ public class InputParser {
         // go through each keyword
         for (String keyword : keywordMap.keySet()) {
             // stem the keyword
-            stemmer = new Stemmer();
-            stemmer.add(keyword.toCharArray(), keyword.length());
-            stemmer.stem();
-            String stemKeyword = stemmer.toString();
+            String stemKeyword = stem(keyword);
             // look for keyword in the input string
             if (correctedInput.contains(stemKeyword)) {
                 // get the set of methods that the keyword is associated with
@@ -77,14 +77,25 @@ public class InputParser {
             methods.add(unrecognizedMethod);
         } else {
 
-            // return the highest scored methods
-            for (String method : acceptedMethods) {
-                if (scores.get(method) == maxScore)
-                    methods.add(method);
+
+            // if there are no negatives, or if the negative phrase is a hedge cue
+            if (negativeScore == 0 || hedgeCueScore > 0) {
+                // return the highest scored methods
+                for (int i = 2; i < acceptedMethods.size(); i++) {
+                    if (scores.get(acceptedMethods.get(i)) == maxScore)
+                        methods.add(acceptedMethods.get(i));
+                }
             }
         }
 
         return methods;
+    }
+
+    private String stem(String word) {
+        Stemmer stemmer = new Stemmer();
+        stemmer.add(word.toCharArray(), word.length());
+        stemmer.stem();
+        return stemmer.toString();
     }
 
     private String correctSpelling(String input) {
@@ -94,11 +105,8 @@ public class InputParser {
         String[] arr = input.split(" ");
 
         for (String s : arr) {
-            stemmer = new Stemmer();
             s = spellingCorrector.correct(s);
-            stemmer.add(s.toCharArray(), s.length());
-            stemmer.stem();
-            s = stemmer.toString();
+            s = stem(s);
             builder.append(s).append(" ");
         }
         return builder.toString();
