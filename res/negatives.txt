@@ -7,6 +7,7 @@ do not know=>HC
 not sure=>HC
 no clue=>HC
 maybe=>HC
+might=>HC
 not use=>AN
 not using=>AN
 not do=>AN
