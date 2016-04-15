@@ -21,7 +21,7 @@ public class Main {
 
             List<String> outputs = inputParser.parseInput(input);
             String out = String.join(", ", outputs);
-            System.out.println("{" + out + "}");
+            System.out.println("{" + out + "}\n");
         }
 
 

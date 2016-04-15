@@ -81,9 +81,6 @@ public class InputParser {
     public List<String> parseInput(String input) {
         String modifiedInput = removeStopWords(input.toLowerCase());
         String correctedInput = correctSpelling(modifiedInput);
-
-        System.out.println("Corrected: " + correctedInput);
-
         boolean containsAbsoluteNegation = checkAbsoluteNegation(correctedInput);
         boolean containsHedgeCues = checkHedgeCues(correctedInput);
         List<String> hitMethods = new ArrayList<>();
