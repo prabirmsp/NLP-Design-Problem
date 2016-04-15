@@ -2,13 +2,31 @@ package edu.grinnell.cs;
 
 
 import org.gauner.jSpellCorrect.ToySpellingCorrector;
-import org.tartarus.martin.Stemmer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
+ * This is the main class that implements the algorithm for reading student free input text.
+ *
+ * <p>
+ *     The class relies on data that describes the various math terminologies as well as the associations of keywords
+ *     to those math terminologies.
+ *     Additionally this class relies on data that describes words with negative connotations and stop words in the
+ *     English language.
+
+        See :
+            "res/keywords.txt";
+            "res/negatives.txt";
+            "res/Stopwords.txt";
+ * </p>
+ *
+ * @author Albert Owusu-Asare
+ * @author Larry Asante Boateng
+ * @author Prabir Pradhan
+ * @author Uzo Nwike
+ *
  * CITATIONS:
  * - Spelling Corrector <a href="http://developer.gauner.org/jspellcorrect/"> Here</a>
  */
@@ -21,11 +39,11 @@ public class InputParser {
     private static final String NEGATIVES_FILENAME = "res/negatives.txt";
     private static final String STOPWORDS_FILENAME = "res/Stopwords.txt";
     private static final int MAX_LEVENSHTEIN_DISTANCE = 3;
+    private static final String UNRECOGNIZED_METHOD = "UnrecognizedMethod";
     private Map<String, Set<String>> negativesMap;
     private List<String> acceptedMethods;
     private Set<String> stopWords;
-    private Map<String, Set<String>> methodsKeyWordMap;
-    private static final String UNRECOGNIZED_METHOD = "UnrecognizedMethod";
+    private Map<String, Set<String>> keywordMap;
     private ToySpellingCorrector spellingCorrector;
 
     public InputParser()
@@ -35,7 +53,7 @@ public class InputParser {
         stopWords = parseStopWordsFile(STOPWORDS_FILENAME);
         methodsTextParser.parseTextFile();
         negativeTextParser.parseTextFile();
-        this.methodsKeyWordMap = methodsTextParser.getKeyWordMap();
+        this.keywordMap = methodsTextParser.getKeyWordMap();
         this.acceptedMethods = methodsTextParser.getAcceptedMethods();
         this.negativesMap = negativeTextParser.getKeyWordMap();
         spellingCorrector = new ToySpellingCorrector();
@@ -58,7 +76,7 @@ public class InputParser {
      * Parse the given input
      *
      * @param input, a string
-     * @return methods, a set of string methods
+     * @return hitMethods, all the hit methods after parsing the input
      */
     public List<String> parseInput(String input) {
         String modifiedInput = removeStopWords(input.toLowerCase());
@@ -66,16 +84,22 @@ public class InputParser {
         boolean containsAbsoluteNegation = checkAbsoluteNegation(correctedInput);
         boolean containsHedgeCues = checkHedgeCues(correctedInput);
         List<String> hitMethods = new ArrayList<>();
+
+        if (!containsAbsoluteNegation || containsHedgeCues){
+                hitMethods = getHitMethods(correctedInput);
+        }
+
         if (containsAbsoluteNegation || containsHedgeCues) {
             hitMethods.add(HELP);
-        } else {
-            hitMethods = getHitMethods(correctedInput);
-
         }
         return hitMethods;
-
     }
 
+    /**
+     * Checks the corrected input for hedge cues.
+     * @param correctedInput
+     * @return @{true} if there is a hedge cue. @{false} if otherwise
+     */
     private boolean checkHedgeCues(String correctedInput) {
         boolean containsHedgeCue = false;
         for (String keyword : negativesMap.get(HEDGE_CUE_KEY)) {
@@ -109,10 +133,10 @@ public class InputParser {
         // keep track of the max score
         int maxScore = 0;
         for(String token : correctedInputTokens){
-            for(String keyword : methodsKeyWordMap.keySet()){
+            for(String keyword : keywordMap.keySet()){
                 int levenshteinDistance = Levenshtein.distance(token,keyword);
                 if(levenshteinDistance <= MAX_LEVENSHTEIN_DISTANCE){
-                    Set<String> methods = methodsKeyWordMap.get(keyword);
+                    Set<String> methods = keywordMap.get(keyword);
                     for (String method : methods) {
                         // add the score of each of the methods
                         int score = scores.get(method) + 1;
@@ -158,7 +182,7 @@ public class InputParser {
     }
 
     private void trainSpellingCorrector() {
-        for (String s : methodsKeyWordMap.keySet()) {
+        for (String s : keywordMap.keySet()) {
             String[] arr = s.split(" ");
             for (String word : arr)
                 spellingCorrector.trainSingle(word);

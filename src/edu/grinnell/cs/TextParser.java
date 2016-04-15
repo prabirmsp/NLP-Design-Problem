@@ -5,8 +5,12 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Custom text parser for the NLP algorithm
+ * Custom text parser for the NLP algorithm.
+ *
+ * <p>Parses various input files, pre processes the raw data into useful data structures   </p>
  * @author Albert Owusu-Asare
+ * @author Larry Asante Boateng
+ * @author  Prabir Pradhan
  * @author  Uzo Nwike
  * @version 1.1 Sun Apr 10 15:19:51 CDT 2016
  *
