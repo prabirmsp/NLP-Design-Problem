@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-
-    private static final String KEYWORDS_FILENAME = "res/keywords.txt";
+    
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        InputParser inputParser = new InputParser(KEYWORDS_FILENAME);
+        InputParser inputParser = new InputParser();
         Scanner scanner = new Scanner(System.in);
         String input;
 
