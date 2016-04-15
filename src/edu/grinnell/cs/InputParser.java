@@ -132,7 +132,21 @@ public class InputParser {
         }
         // keep track of the max score
         int maxScore = 0;
-        for(String token : correctedInputTokens){
+        int correctedInputTokensLength = correctedInputTokens.length;
+        for(int i= 0; i < correctedInputTokensLength ; i++){
+            String token = correctedInputTokens[i];
+            String nextToken;
+
+            if(i + 1 < correctedInputTokensLength){
+                nextToken = correctedInputTokens[i + 1];
+                nextToken = token + " " + nextToken;
+                if(negativesMap.get(ABSOLUTE_NEGATIVE_KEY).contains(nextToken) ||
+                        negativesMap.get(HEDGE_CUE_KEY).contains(nextToken)){
+                    token = nextToken;
+                    ++i;
+                }
+            }
+
             for(String keyword : keywordMap.keySet()){
                 int levenshteinDistance = Levenshtein.distance(token,keyword);
                 if(levenshteinDistance <= MAX_LEVENSHTEIN_DISTANCE){
@@ -155,6 +169,7 @@ public class InputParser {
             hitMethods.add(UNRECOGNIZED_METHOD);
         return hitMethods;
     }
+
 
     private String removeStopWords(String input) {
         StringBuilder builder = new StringBuilder();
