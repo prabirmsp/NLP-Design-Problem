@@ -38,7 +38,7 @@ public class InputParser {
     private static final String METHODS_FILENAME = "res/keywords.txt";
     private static final String NEGATIVES_FILENAME = "res/negatives.txt";
     private static final String STOPWORDS_FILENAME = "res/Stopwords.txt";
-    private static final int MAX_LEVENSHTEIN_DISTANCE = 3;
+    private static final int MAX_LEVENSHTEIN_DISTANCE = 2;
     private static final String UNRECOGNIZED_METHOD = "UnrecognizedMethod";
     private Map<String, Set<String>> negativesMap;
     private List<String> acceptedMethods;
@@ -81,17 +81,21 @@ public class InputParser {
     public List<String> parseInput(String input) {
         String modifiedInput = removeStopWords(input.toLowerCase());
         String correctedInput = correctSpelling(modifiedInput);
+
+        System.out.println("Corrected: " + correctedInput);
+
         boolean containsAbsoluteNegation = checkAbsoluteNegation(correctedInput);
         boolean containsHedgeCues = checkHedgeCues(correctedInput);
         List<String> hitMethods = new ArrayList<>();
 
-        if (!containsAbsoluteNegation || containsHedgeCues){
-                hitMethods = getHitMethods(correctedInput);
-        }
+        if (!containsAbsoluteNegation || containsHedgeCues)
+                addHitMethods(correctedInput, hitMethods);
 
-        if (containsAbsoluteNegation || containsHedgeCues) {
+        if (containsAbsoluteNegation || containsHedgeCues)
             hitMethods.add(HELP);
-        }
+
+        if (hitMethods.isEmpty()) hitMethods.add(UNRECOGNIZED_METHOD);
+
         return hitMethods;
     }
 
@@ -122,7 +126,7 @@ public class InputParser {
         return containsAbsoluteNegation;
     }
 
-    private List<String> getHitMethods(String correctedInput) {
+    private void addHitMethods(String correctedInput, List<String> hitMethods) {
         String [] correctedInputTokens = correctedInput.split("\\s+");
         // data structure to keep score
         Map<String, Integer> scores = new HashMap<>();
@@ -160,14 +164,11 @@ public class InputParser {
                 }
             }
         }
-        List<String> hitMethods = new ArrayList<>();
+
         for (String method : acceptedMethods) {
             if (scores.get(method) == maxScore && maxScore != 0)
                 hitMethods.add(method);
         }
-        if(maxScore == 0)
-            hitMethods.add(UNRECOGNIZED_METHOD);
-        return hitMethods;
     }
 
 
