@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * This is a simple client that utilises the algorithm.
+ */
 public class Main {
     
 
