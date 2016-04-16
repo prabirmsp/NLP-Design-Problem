@@ -49,10 +49,12 @@ The resources can be found in the directory `res`. This directory contains:
 Installation:
 ----------
 For the compilation and execution of the programs can be done in the UNIX environment. Specifically the following command can be used issued in the bash shell to compile.
+
+To compile, navigate to the `nlp_design_submission` directory and run the following command:
 ```bash
 javac -d bin -sourcepath src -cp lib/jSpellCorrect-0.4.jar src/*.java
 ```
-To run the java file use the command :
+To run the java file use the command:
 ```bash
 java -cp bin:lib/jSpellCorrect-0.4.jar edu.grinnell.cs.Main <input sentence>
 ```
