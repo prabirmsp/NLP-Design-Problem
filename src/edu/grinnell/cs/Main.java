@@ -2,31 +2,24 @@ package edu.grinnell.cs;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * This is a simple client that utilises the algorithm.
  */
 public class Main {
-    
+
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        InputParser inputParser = new InputParser();
-        Scanner scanner = new Scanner(System.in);
-        String input;
-
-        while (true) {
-            System.out.printf("What method do you plan to use?\n-> ");
-            input = scanner.nextLine();
-            if(input.equals("") || input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit"))
-                return;
-
+        if (args.length < 1) {
+            System.out.println("NLP - Invalid arguments");
+            System.out.println("usage: java Main <input sentence>");
+        } else {
+            InputParser inputParser = new InputParser();
+            String input = String.join(" ", args);
             List<String> outputs = inputParser.parseInput(input);
             String out = String.join(", ", outputs);
             System.out.println("{" + out + "}\n");
         }
-
-
     }
 }
